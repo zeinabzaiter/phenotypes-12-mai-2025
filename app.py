@@ -1,6 +1,3 @@
-# Générer une application Streamlit complète et autonome lisant directement depuis le fichier Excel brut
-
-final_dashboard_code = """
 import pandas as pd
 import numpy as np
 import streamlit as st
@@ -16,7 +13,7 @@ df["Week"] = df["week"].dt.date
 phenotypes = ["MRSA", "Other", "VRSA", "Wild"]
 df["Total"] = df[phenotypes].sum(axis=1)
 
-# --- Calcul des pourcentages et des alertes ---
+# --- Calcul des pourcentages ---
 for pheno in phenotypes:
     df[f"% {pheno}"] = (df[pheno] / df["Total"]) * 100
 
@@ -38,7 +35,7 @@ filtered_df = df[(df["Week"] >= week_range[0]) & (df["Week"] <= week_range[1])]
 pct_col = f"% {selected_pheno}"
 nb_col = selected_pheno
 
-# Calcul des seuils Tukey pour cette période
+# Calcul des seuils Tukey
 values = filtered_df[pct_col].dropna()
 q1 = np.percentile(values, 25)
 q3 = np.percentile(values, 75)
@@ -71,11 +68,3 @@ st.plotly_chart(fig, use_container_width=True)
 # Graphique du nombre de cas
 st.subheader(f"📈 Nombre hebdomadaire de cas : {selected_pheno}")
 st.line_chart(filtered_df.set_index("Week")[nb_col])
-"""
-
-# Sauvegarder le code dans un fichier Python
-final_dashboard_path = "/mnt/data/app_phenotypes_final.py"
-with open(final_dashboard_path, "w") as f:
-    f.write(final_dashboard_code)
-
-final_dashboard_path
